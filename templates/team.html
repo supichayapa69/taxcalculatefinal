@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{# templates/team.html — หน้าข้อมูลคณะผู้จัดทำโครงการ #}
+{% block content %}
+<div class="page-header">
+  <span class="badge badge-primary">ข้อมูลคณะทำงาน</span>
+  <h1>{{ group.name }} <small class="muted">· กลุ่มเรียนที่ {{ group.section }}</small></h1>
+  <p class="lead"><strong>หัวข้อโครงการ:</strong> {{ group.topic }}</p>
+  <p style="color: #475569; font-size: 14px; margin-top: -6px;">{{ group.description }}</p>
+</div>
+
+<h2>สมาชิกคณะทำงาน ({{ count }} คน)</h2>
+<div class="member-grid">
+  {% for m in members %}
+  <div class="member">
+    <div class="avatar">{{ m.initial }}</div>
+    <div class="member-name">{{ m.name }}</div>
+    <div class="muted" style="font-family: monospace; font-size: 13.5px; margin-top: 2px;">{{ m.id }}</div>
+    <div class="role" style="font-weight: 600;">{{ m.role }}</div>
+    <div class="task" style="margin-top: 6px; background: #f8fafc; padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0;">{{ m.task }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<section class="section-container" style="margin-top: 28px;">
+  <h2>ตารางสรุปหน้าที่และความรับผิดชอบ</h2>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>ชื่อ-นามสกุล</th>
+          <th>รหัสนักศึกษา</th>
+          <th>ตำแหน่งในทีม</th>
+          <th>โมดูล / หน้าที่รับผิดชอบ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in members %}
+        <tr>
+          <td><strong>{{ loop.index }}</strong></td>
+          <td style="font-weight: 600;">{{ m.name }}</td>
+          <td style="font-family: monospace;">{{ m.id }}</td>
+          <td><span class="badge badge-accent">{{ m.role }}</span></td>
+          <td>{{ m.task }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

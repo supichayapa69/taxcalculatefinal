@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <span class="badge badge-primary">หมวดภาษีเงินได้</span>
+  <h1>{{ title }}</h1>
+  <p class="lead">ระบบคำนวณและประเมินภาษีเงินได้บุคคลธรรมดา (ภ.ง.ด. 91) และภาษีเงินได้นิติบุคคล ตามประมวลรัษฎากร</p>
+</div>
+
+<div class="grid-2-col">
+  <!-- คอลัมน์ที่ 1: แบบฟอร์มคำนวณภาษีเงินได้บุคคลธรรมดา -->
+  <div class="card form-card">
+    <div class="card-header">
+      <h3>คำนวณภาษีเงินได้บุคคลธรรมดา</h3>
+      <span class="badge badge-accent">อัตราก้าวหน้า 0% - 35%</span>
+    </div>
+    <form method="post" class="standard-form">
+      <input type="hidden" name="tax_kind" value="personal">
+      
+      <div class="form-group">
+        <label for="p_name">ชื่อ-นามสกุล ผู้มีเงินได้ *</label>
+        <input type="text" id="p_name" name="taxpayer_name" placeholder="เช่น นายสมชาย มั่นคง" required>
+      </div>
+
+      <div class="form-group">
+        <label for="p_income">เงินได้พึงประเมินตลอดปี (บาท) *</label>
+        <input type="number" id="p_income" name="income" placeholder="เช่น 600000" min="0" step="100" required>
+        <small class="helper-text">กฎหมายหักค่าใช้จ่าย 50% แต่ไม่เกิน 100,000 บาทอัตโนมัติ</small>
+      </div>
+
+      <div class="form-group">
+        <label for="p_ins">เบี้ยประกันชีวิต / กองทุนสำรองเลี้ยงชีพ (บาท)</label>
+        <input type="number" id="p_ins" name="insurance" placeholder="ระบุตามจริง (สูงสุด 100,000)" min="0" step="100">
+        <small class="helper-text">ระบบรวมค่าลดหย่อนส่วนบุคคล 60,000 บาทให้เรียบร้อยแล้ว</small>
+      </div>
+
+      <div class="form-group">
+        <label for="p_status">สถานะการชำระเงิน</label>
+        <select id="p_status" name="status">
+          <option value="รอชำระ">รอชำระ</option>
+          <option value="ชำระแล้ว">ชำระแล้ว</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">คำนวณและบันทึกประเมินภาษี</button>
+    </form>
+  </div>
+
+  <!-- คอลัมน์ที่ 2: แบบฟอร์มคำนวณภาษีเงินได้นิติบุคคล -->
+  <div class="card form-card">
+    <div class="card-header">
+      <h3>คำนวณภาษีเงินได้นิติบุคคล</h3>
+      <span class="badge badge-accent">SME / ทั่วไป</span>
+    </div>
+    <form method="post" class="standard-form">
+      <input type="hidden" name="tax_kind" value="corporate">
+
+      <div class="form-group">
+        <label for="c_name">ชื่อนิติบุคคล / ห้างหุ้นส่วน / บริษัท *</label>
+        <input type="text" id="c_name" name="taxpayer_name" placeholder="เช่น บริษัท ก้าวหน้าเทคโนโลยี จำกัด" required>
+      </div>
+
+      <div class="form-group">
+        <label for="c_profit">กำไรสุทธิทางภาษี (บาท) *</label>
+        <input type="number" id="c_profit" name="net_profit" placeholder="เช่น 1500000" min="0" step="100" required>
+      </div>
+
+      <div class="form-group">
+        <label for="c_type">ประเภทกิจการตามประมวลรัษฎากร</label>
+        <select id="c_type" name="corp_type">
+          <option value="sme">วิสาหกิจขนาดกลางและขนาดย่อม (SME) อัตราผ่อนปรน</option>
+          <option value="general">นิติบุคคลทั่วไป (อัตราร้อยละ 20)</option>
+        </select>
+        <small class="helper-text">SME: กำไร 3 แสนแรกยกเว้น, 3 แสน - 3 ล้าน เสีย 15%, เกิน 3 ล้าน เสีย 20%</small>
+      </div>
+
+      <div class="form-group">
+        <label for="c_status">สถานะการชำระเงิน</label>
+        <select id="c_status" name="status">
+          <option value="รอชำระ">รอชำระ</option>
+          <option value="ชำระแล้ว">ชำระแล้ว</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-secondary">คำนวณและบันทึกภาษีนิติบุคคล</button>
+    </form>
+  </div>
+</div>
+
+<!-- ส่วนแสดงผลตารางรายการประเมินภาษีเงินได้ -->
+<section class="section-container">
+  <div class="section-title-wrap">
+    <h2>ประวัติการประเมินภาษีเงินได้</h2>
+    <span class="count-pill">พบ {{ total_count }} รายการ</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>ผู้เสียภาษี</th>
+          <th>ประเภท</th>
+          <th>ฐานประเมิน (บาท)</th>
+          <th>หักลดหย่อน (บาท)</th>
+          <th>เงินได้สุทธิ (บาท)</th>
+          <th>ภาษีที่ต้องชำระ (บาท)</th>
+          <th>อัตราจริง</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td><strong>{{ r.id }}</strong></td>
+          <td>{{ r.taxpayer_name }}</td>
+          <td><span class="sub-label">{{ r.sub_type }}</span></td>
+          <td class="num">{{ "{:,.2f}".format(r.base_amount) }}</td>
+          <td class="num">{{ "{:,.2f}".format(r.deductions) }}</td>
+          <td class="num bold">{{ "{:,.2f}".format(r.taxable_base) }}</td>
+          <td class="num tax-highlight">{{ "{:,.2f}".format(r.calculated_tax) }}</td>
+          <td class="num">{{ r.effective_rate }}%</td>
+          <td>
+            {% if r.status == 'ชำระแล้ว' %}
+              <span class="status-tag status-paid">{{ r.status }}</span>
+            {% else %}
+              <span class="status-tag status-pending">{{ r.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="post" style="display:inline;" onsubmit="return confirm('ยืนยันการลบรายการนี้?');">
+              <input type="hidden" name="delete_id" value="{{ r.id }}">
+              <button type="submit" class="btn-delete" title="ลบรายการ">✕</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="10" class="text-center empty-state">ยังไม่มีข้อมูลการประเมินภาษีเงินได้</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

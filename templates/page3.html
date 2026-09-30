@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <span class="badge badge-primary">แดชบอร์ดผู้บริหาร</span>
+  <h1>{{ title }}</h1>
+  <p class="lead">วิเคราะห์ภาพรวมการจัดเก็บภาษี สัดส่วนงบประมาณตาม 4 ประเภทภาษี และจัดอันดับภาระภาษี</p>
+</div>
+
+<!-- สถิติภาพรวม 3 กล่องข้อมูล -->
+<div class="stats-overview-grid">
+  <div class="stat-card">
+    <span class="stat-label">ประมาณการภาษีรวมทั้งสิ้น</span>
+    <span class="stat-val highlight-blue">{{ "{:,.2f}".format(total_tax_all) }} บาท</span>
+    <span class="stat-sub">จากฐานข้อมูลทั้งหมด {{ count_all }} รายการ</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">จัดเก็บและชำระแล้ว</span>
+    <span class="stat-val highlight-green">{{ "{:,.2f}".format(total_paid) }} บาท</span>
+    <span class="stat-sub">เงินงบประมาณเข้าคลังแล้ว</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">อยู่ระหว่างรอชำระ</span>
+    <span class="stat-val highlight-amber">{{ "{:,.2f}".format(total_pending) }} บาท</span>
+    <span class="stat-sub">รอดำเนินการติดตามตามกำหนด</span>
+  </div>
+</div>
+
+<!-- สัดส่วนภาษีแยกตาม 4 หมวดหมู่ -->
+<section class="section-container">
+  <h2>สัดส่วนภาษีแยกตาม 4 หมวดหมู่หลักตามกฎหมายไทย</h2>
+  <div class="category-bars-container">
+    {% for c in breakdown %}
+    <div class="bar-row">
+      <div class="bar-info">
+        <span class="bar-name"><strong>{{ c.name }}</strong> ({{ c.count }} รายการ)</span>
+        <span class="bar-amount">{{ "{:,.2f}".format(c.total_tax) }} บาท ({{ c.percentage }}%)</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width: {{ c.percentage }}%;"></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ส่วนจัดอันดับ 5 รายการที่มีภาระภาษีสูงสุด -->
+<section class="section-container">
+  <h2>5 อันดับแรก ผู้มีภาระภาษีสูงสุด (Top Taxpayers)</h2>
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>อันดับ</th>
+          <th>รหัส</th>
+          <th>ผู้เสียภาษี</th>
+          <th>ประเภทภาษี</th>
+          <th>ภาษีประเมิน (บาท)</th>
+          <th>อัตราภาษีจริง</th>
+          <th>สถานะ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in top_5 %}
+        <tr>
+          <td><span class="rank-badge rank-{{ loop.index }}">{{ loop.index }}</span></td>
+          <td><strong>{{ r.record_id }}</strong></td>
+          <td>{{ r.taxpayer_name }}</td>
+          <td><span class="sub-label">{{ r.tax_category }}</span></td>
+          <td class="num tax-highlight">{{ "{:,.2f}".format(r.calculated_tax) }}</td>
+          <td class="num">{{ r.get_effective_rate() }}%</td>
+          <td>
+            {% if r.status == 'ชำระแล้ว' %}
+              <span class="status-tag status-paid">{{ r.status }}</span>
+            {% else %}
+              <span class="status-tag status-pending">{{ r.status }}</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ตารางค้นหาและตรวจสอบรายการทั้งหมด -->
+<section class="section-container">
+  <div class="section-title-wrap">
+    <h2>ค้นหาและตรวจสอบรายการภาษีทั้งหมด</h2>
+    <form method="post" style="display:inline;">
+      <input type="hidden" name="action" value="reset">
+      <button type="submit" class="btn btn-outline-danger" onclick="return confirm('ต้องการคืนค่าข้อมูลตัวอย่างมาตรฐานใช่หรือไม่?');">
+        คืนค่าข้อมูลเริ่มต้น
+      </button>
+    </form>
+  </div>
+
+  <!-- แถบค้นหาและตัวกรอง -->
+  <form method="get" class="filter-bar">
+    <input type="text" name="q" placeholder="พิมพ์ชื่อผู้เสียภาษี หรือรหัสรายการ..." value="{{ search_keyword }}">
+    <select name="cat">
+      <option value="">-- ทุกหมวดหมู่ภาษี --</option>
+      {% for cat in categories_target %}
+      <option value="{{ cat }}" {% if filter_category == cat %}selected{% endif %}>{{ cat }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">ค้นหา</button>
+    {% if search_keyword or filter_category %}
+      <a href="{{ url_for('page', name='page3') }}" class="btn btn-secondary">ล้างการค้นหา</a>
+    {% endif %}
+  </form>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>คำอธิบายรายการ (models.describe)</th>
+          <th>ภาษีที่ต้องชำระ</th>
+          <th>สถานะ</th>
+          <th>การจัดการสถานะ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td><strong>{{ r.record_id }}</strong></td>
+          <td>
+            <div style="font-size: 0.95rem;"><strong>{{ r.taxpayer_name }}</strong> &bull; <span class="sub-label">{{ r.tax_category }}</span></div>
+            <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">{{ r.describe() }}</div>
+          </td>
+          <td class="num tax-highlight">{{ "{:,.2f}".format(r.calculated_tax) }}</td>
+          <td>
+            {% if r.status == 'ชำระแล้ว' %}
+              <span class="status-tag status-paid">{{ r.status }}</span>
+            {% else %}
+              <span class="status-tag status-pending">{{ r.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="post" style="display:inline;">
+              <input type="hidden" name="toggle_paid_id" value="{{ r.record_id }}">
+              <button type="submit" class="btn btn-small">
+                {% if r.status == 'ชำระแล้ว' %}เปลี่ยนเป็น 'รอชำระ'{% else %}บันทึก 'ชำระแล้ว'{% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="text-center empty-state">ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

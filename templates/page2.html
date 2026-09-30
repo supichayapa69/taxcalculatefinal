@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <span class="badge badge-primary">หมวดภาษีท้องถิ่น</span>
+  <h1>{{ title }}</h1>
+  <p class="lead">ระบบคำนวณและประเมินภาษีที่ดินและสิ่งปลูกสร้าง (พ.ร.บ. 2562) และภาษีป้าย (กฎกระทรวง 2563) ตามระเบียบราชการส่วนท้องถิ่น</p>
+</div>
+
+<div class="grid-2-col">
+  <!-- คอลัมน์ที่ 1: แบบฟอร์มคำนวณภาษีที่ดินและสิ่งปลูกสร้าง -->
+  <div class="card form-card">
+    <div class="card-header">
+      <h3>คำนวณภาษีที่ดินและสิ่งปลูกสร้าง</h3>
+      <span class="badge badge-accent">พ.ร.บ. ภาษีที่ดินฯ 2562</span>
+    </div>
+    <form method="post" class="standard-form">
+      <input type="hidden" name="tax_kind" value="land">
+      
+      <div class="form-group">
+        <label for="l_name">ชื่อเจ้าของทรัพย์สิน / ผู้ครอบครอง *</label>
+        <input type="text" id="l_name" name="taxpayer_name" placeholder="เช่น นางสมศรี สุขเกษม" required>
+      </div>
+
+      <div class="form-group">
+        <label for="l_val">ราคาประเมินทุนทรัพย์ที่ดินและสิ่งปลูกสร้าง (บาท) *</label>
+        <input type="number" id="l_val" name="appraisal_value" placeholder="เช่น 12000000" min="0" step="1000" required>
+        <small class="helper-text">ราคาประเมินจากกรมธนารักษ์หรือใบประเมินของ อปท.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="l_type">ประเภทการใช้ประโยชน์ในที่ดินและสิ่งปลูกสร้าง</label>
+        <select id="l_type" name="land_type">
+          <option value="home_main">ที่อยู่อาศัย (บ้านหลังหลัก - ยกเว้น 50 ล้านบาทแรก)</option>
+          <option value="agri">เกษตรกรรม (บุคคลธรรมดา - ยกเว้น 50 ล้านบาทแรก)</option>
+          <option value="home_sub">ที่อยู่อาศัย (บ้านหลังอื่น / คอนโดปล่อยเช่า อัตรา 0.02%)</option>
+          <option value="commercial">การใช้ประโยชน์อื่น / พาณิชยกรรม / โรงงาน (อัตรา 0.30% - 0.40%)</option>
+          <option value="vacant">ที่ดินรกร้างว่างเปล่า ไม่ได้ทำประโยชน์ (อัตรา 0.30%)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="l_status">สถานะการชำระเงิน</label>
+        <select id="l_status" name="status">
+          <option value="รอชำระ">รอชำระ</option>
+          <option value="ชำระแล้ว">ชำระแล้ว</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">คำนวณและประเมินภาษีที่ดิน</button>
+    </form>
+  </div>
+
+  <!-- คอลัมน์ที่ 2: แบบฟอร์มคำนวณภาษีป้าย -->
+  <div class="card form-card">
+    <div class="card-header">
+      <h3>คำนวณภาษีป้าย</h3>
+      <span class="badge badge-accent">กฎกระทรวง พ.ศ. 2563</span>
+    </div>
+    <form method="post" class="standard-form">
+      <input type="hidden" name="tax_kind" value="sign">
+
+      <div class="form-group">
+        <label for="s_name">ชื่อร้านค้า / กิจการ / เจ้าของป้าย *</label>
+        <input type="text" id="s_name" name="taxpayer_name" placeholder="เช่น ร้านกาแฟคอฟฟี่บาร์" required>
+      </div>
+
+      <div class="grid-2-col" style="gap: 12px; margin-bottom: 0;">
+        <div class="form-group">
+          <label for="s_width">ความกว้าง (ซม.) *</label>
+          <input type="number" id="s_width" name="width" placeholder="เช่น 120" min="1" step="0.5" required>
+        </div>
+        <div class="form-group">
+          <label for="s_height">ความยาว/สูง (ซม.) *</label>
+          <input type="number" id="s_height" name="height" placeholder="เช่น 240" min="1" step="0.5" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="s_type">ประเภทของป้าย</label>
+        <select id="s_type" name="sign_type">
+          <option value="1">ประเภท 1: อักษรไทยล้วน (5 บ./500 ตร.ซม.)</option>
+          <option value="2">ประเภท 2: อักษรไทยปนอักษรต่างประเทศ/ภาพ (26 บ./500 ตร.ซม.)</option>
+          <option value="3">ประเภท 3: ไม่มีอักษรไทย หรืออักษรไทยอยู่ต่ำกว่าต่างประเทศ (50 บ./500 ตร.ซม.)</option>
+        </select>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" name="is_moving" value="yes"> ป้ายมีข้อความเคลื่อนไหว หรือเปลี่ยนเป็นข้อความอื่นได้
+        </label>
+        <small class="helper-text">กฎหมายกำหนดอัตราภาษีป้ายขั้นต่ำไม่น้อยกว่า 200 บาทต่อป้าย</small>
+      </div>
+
+      <div class="form-group">
+        <label for="s_status">สถานะการชำระเงิน</label>
+        <select id="s_status" name="status">
+          <option value="รอชำระ">รอชำระ</option>
+          <option value="ชำระแล้ว">ชำระแล้ว</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-secondary">คำนวณและประเมินภาษีป้าย</button>
+    </form>
+  </div>
+</div>
+
+<!-- ส่วนแสดงผลตารางประวัติภาษีท้องถิ่น -->
+<section class="section-container">
+  <div class="section-title-wrap">
+    <h2>ประวัติการประเมินภาษีที่ดินและภาษีป้าย</h2>
+    <span class="count-pill">พบ {{ total_count }} รายการ</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>รหัส</th>
+          <th>เจ้าของ/สถานประกอบการ</th>
+          <th>ประเภทภาษี</th>
+          <th>ลักษณะ / หมวดหมู่</th>
+          <th>ฐานประเมิน (บาท/ตร.ซม.)</th>
+          <th>ยกเว้น (บาท)</th>
+          <th>ฐานภาษีสุทธิ</th>
+          <th>ภาษีที่ต้องชำระ (บาท)</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr>
+          <td><strong>{{ r.id }}</strong></td>
+          <td>{{ r.taxpayer_name }}</td>
+          <td><span class="category-pill">{{ r.tax_category }}</span></td>
+          <td><span class="sub-label">{{ r.sub_type }}</span></td>
+          <td class="num">{{ "{:,.2f}".format(r.base_amount) }}</td>
+          <td class="num">{{ "{:,.2f}".format(r.deductions) }}</td>
+          <td class="num bold">{{ "{:,.2f}".format(r.taxable_base) }}</td>
+          <td class="num tax-highlight">{{ "{:,.2f}".format(r.calculated_tax) }}</td>
+          <td>
+            {% if r.status == 'ชำระแล้ว' %}
+              <span class="status-tag status-paid">{{ r.status }}</span>
+            {% else %}
+              <span class="status-tag status-pending">{{ r.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="post" style="display:inline;" onsubmit="return confirm('ยืนยันการลบรายการนี้?');">
+              <input type="hidden" name="delete_id" value="{{ r.id }}">
+              <button type="submit" class="btn-delete" title="ลบรายการ">✕</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="10" class="text-center empty-state">ยังไม่มีข้อมูลการประเมินภาษีท้องถิ่น</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

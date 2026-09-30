@@ -1,0 +1,93 @@
+[
+  {
+    "id": "TAX-101",
+    "taxpayer_name": "นายสมศักดิ์ มั่นคง",
+    "tax_category": "ภาษีเงินได้บุคคลธรรมดา",
+    "sub_type": "ภ.ง.ด. 91 (เงินเดือน)",
+    "base_amount": 600000.0,
+    "deductions": 160000.0,
+    "taxable_base": 440000.0,
+    "calculated_tax": 21500.0,
+    "effective_rate": 3.58,
+    "status": "ชำระแล้ว",
+    "note": "หักค่าใช้จ่าย 100,000 + ลดหย่อนส่วนบุคคล 60,000"
+  },
+  {
+    "id": "TAX-102",
+    "taxpayer_name": "บริษัท อุบลซอฟต์แวร์ โซลูชั่น จำกัด",
+    "tax_category": "ภาษีเงินได้นิติบุคคล",
+    "sub_type": "วิสาหกิจขนาดกลางและขนาดย่อม (SME)",
+    "base_amount": 1200000.0,
+    "deductions": 0.0,
+    "taxable_base": 1200000.0,
+    "calculated_tax": 135000.0,
+    "effective_rate": 11.25,
+    "status": "ชำระแล้ว",
+    "note": "กำไร 300,000 แรกยกเว้น ส่วนที่เกิน 300,001-1.2 ล้าน เสียร้อยละ 15"
+  },
+  {
+    "id": "TAX-103",
+    "taxpayer_name": "บริษัท สยามวิศวกรรมการก่อสร้าง จำกัด",
+    "tax_category": "ภาษีเงินได้นิติบุคคล",
+    "sub_type": "นิติบุคคลทั่วไป",
+    "base_amount": 5000000.0,
+    "deductions": 0.0,
+    "taxable_base": 5000000.0,
+    "calculated_tax": 1000000.0,
+    "effective_rate": 20.0,
+    "status": "รอชำระ",
+    "note": "อัตราภาษีเงินได้นิติบุคคลทั่วไปร้อยละ 20 ของกำไรสุทธิ"
+  },
+  {
+    "id": "TAX-104",
+    "taxpayer_name": "นางสมศรี สุขเกษม",
+    "tax_category": "ภาษีที่ดินและสิ่งปลูกสร้าง",
+    "sub_type": "ที่อยู่อาศัย (บ้านหลังหลัก)",
+    "base_amount": 60000000.0,
+    "deductions": 50000000.0,
+    "taxable_base": 10000000.0,
+    "calculated_tax": 2000.0,
+    "effective_rate": 0.003,
+    "status": "ชำระแล้ว",
+    "note": "บ้านและที่ดินหลังหลัก ยกเว้น 50 ล้านแรก ส่วนเกิน 10 ล้าน เสีย 0.02%"
+  },
+  {
+    "id": "TAX-105",
+    "taxpayer_name": "หจก. วารินชำราบพาณิชย์",
+    "tax_category": "ภาษีที่ดินและสิ่งปลูกสร้าง",
+    "sub_type": "การใช้ประโยชน์อื่น/พาณิชยกรรม",
+    "base_amount": 15000000.0,
+    "deductions": 0.0,
+    "taxable_base": 15000000.0,
+    "calculated_tax": 45000.0,
+    "effective_rate": 0.3,
+    "status": "รอชำระ",
+    "note": "พาณิชยกรรม มูลค่าไม่เกิน 50 ล้านบาท อัตราร้อยละ 0.30"
+  },
+  {
+    "id": "TAX-106",
+    "taxpayer_name": "ร้านอาหารอีสานคลาสสิก",
+    "tax_category": "ภาษีป้าย",
+    "sub_type": "ป้ายอักษรไทยปนอักษรต่างประเทศ",
+    "base_amount": 25000.0,
+    "deductions": 0.0,
+    "taxable_base": 25000.0,
+    "calculated_tax": 1300.0,
+    "effective_rate": 5.2,
+    "status": "ชำระแล้ว",
+    "note": "ขนาด 25,000 ตร.ซม. (50 หน่วย) x 26 บาท/500 ตร.ซม."
+  },
+  {
+    "id": "TAX-107",
+    "taxpayer_name": "คลินิกทันตแพทย์สุรินทร์",
+    "tax_category": "ภาษีป้าย",
+    "sub_type": "ป้ายอักษรไทยล้วน",
+    "base_amount": 4000.0,
+    "deductions": 0.0,
+    "taxable_base": 4000.0,
+    "calculated_tax": 200.0,
+    "effective_rate": 5.0,
+    "status": "รอชำระ",
+    "note": "คำนวณได้ 40 บาท กฎหมายกำหนดอัตราขั้นต่ำ 200 บาท"
+  }
+]
